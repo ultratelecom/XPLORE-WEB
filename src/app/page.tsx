@@ -60,7 +60,7 @@ const useImageGeneration = () => {
   const [images, setImages] = useState<{[key: string]: string}>({})
   const [loading, setLoading] = useState<{[key: string]: boolean}>({})
 
-  const generateImage = async (key: string, prompt: string) => {
+  const generateImage = React.useCallback(async (key: string, prompt: string) => {
     setLoading(prev => ({ ...prev, [key]: true }))
     
     try {
@@ -85,7 +85,7 @@ const useImageGeneration = () => {
     } finally {
       setLoading(prev => ({ ...prev, [key]: false }))
     }
-  }
+  }, [])
 
   return { images, loading, generateImage }
 }
@@ -106,7 +106,7 @@ export default function TobagoSplashPage() {
       setShowLoading(false)
     }, 3000)
 
-    // Generate all needed images with detailed, realistic prompts
+    // Generate all needed images with detailed, realistic prompts - only once on mount
     generateImage('hero', 'aerial drone shot of Englishmans Bay in Tobago, turquoise crystal clear waters, pristine white sand beach, swaying palm trees, lush tropical green hills, golden hour cinematic lighting, paradise beach, dramatic sky, ultra-detailed, professional photography')
     generateImage('sunset', 'breathtaking sunset over Store Bay beach in Tobago, distant fishing boats silhouetted against golden sky, fishermen as small distant figures on shoreline, dramatic orange and pink clouds, warm golden light reflecting on calm waters, peaceful Caribbean evening, cinematic composition, ultra-detailed')
     generateImage('nylon', 'Nylon Pool Tobago with colorful fishing boats anchored in crystal-clear shallow turquoise water, aerial drone view, pristine white sand bottom clearly visible through transparent water, traditional Caribbean fishing vessels, tropical paradise, bright sunny day, ultra-detailed, professional photography')
@@ -114,7 +114,7 @@ export default function TobagoSplashPage() {
     generateImage('culture', 'traditional Tobago steel pan drums arrangement at nighttime village setting, glowing fairy lights strung between palm trees, colorful costumes displayed on stands, musical instruments in focus, warm ambient lighting, cultural celebration setup, no people visible, ultra-detailed, atmospheric photography')
 
     return () => clearTimeout(timer)
-  }, [generateImage])
+  }, []) // Empty dependency array - only run once on mount
 
   // Cycling text effect
   useEffect(() => {

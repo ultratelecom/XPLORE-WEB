@@ -17,8 +17,6 @@ const phrases = ["Tobago", "Your Paradise", "Your Adventure", "Your Getaway", "T
 
 export default function TobagoSplashPage() {
   const [phraseIndex, setPhraseIndex] = useState(0)
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
 
   // Cycling text effect
   useEffect(() => {
@@ -37,15 +35,21 @@ export default function TobagoSplashPage() {
     >
           {/* Hero Section */}
           <section className="relative h-screen flex items-center justify-center overflow-hidden">
-            {/* Background Image with Parallax */}
-            <motion.div 
-              style={{ 
-                y,
-                backgroundImage: `url(${images.hero})`,
-                backgroundAttachment: 'fixed'
-              }}
-              className="absolute inset-0 w-full h-[120%] bg-cover bg-center"
-            />
+            {/* Background Video */}
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/xplore-header-video.m4v" type="video/mp4" />
+              {/* Fallback background image if video fails to load */}
+              <div 
+                className="absolute inset-0 w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${images.hero})` }}
+              />
+            </video>
             
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/40" />

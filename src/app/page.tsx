@@ -1,120 +1,24 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
-// Loading Screen Component
-const LoadingScreen = () => {
-  return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8 }}
-      className="fixed inset-0 z-50 bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 flex items-center justify-center"
-    >
-      <div className="text-center">
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ 
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="w-20 h-20 mx-auto mb-8 bg-white/20 rounded-full border-4 border-white flex items-center justify-center"
-        >
-          <div className="text-3xl">🏝️</div>
-        </motion.div>
-        
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-white mb-4"
-        >
-          Loading Your Next Adventure...
-        </motion.h1>
-        
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 2.5, ease: "easeInOut" }}
-          className="h-1 bg-white/30 rounded-full mx-auto max-w-xs"
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: "100%" }}
-            transition={{ duration: 2.5, ease: "easeInOut" }}
-            className="h-full bg-white rounded-full"
-          />
-        </motion.div>
-      </div>
-    </motion.div>
-  )
-}
-
-// Custom hook for generating images
-const useImageGeneration = () => {
-  const [images, setImages] = useState<{[key: string]: string}>({})
-  const [loading, setLoading] = useState<{[key: string]: boolean}>({})
-
-  const generateImage = React.useCallback(async (key: string, prompt: string) => {
-    setLoading(prev => ({ ...prev, [key]: true }))
-    
-    try {
-      const response = await fetch('/api/generate-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt, size: '1920x1080' }),
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        setImages(prev => ({ ...prev, [key]: data.image_url }))
-      } else {
-        // Fallback to beautiful placeholder
-        setImages(prev => ({ ...prev, [key]: `https://picsum.photos/1920/1080?random=${Math.random()}` }))
-      }
-    } catch (error) {
-      // Fallback to beautiful placeholder
-      setImages(prev => ({ ...prev, [key]: `https://picsum.photos/1920/1080?random=${Math.random()}` }))
-    } finally {
-      setLoading(prev => ({ ...prev, [key]: false }))
-    }
-  }, [])
-
-  return { images, loading, generateImage }
+// Static images - no more dynamic generation needed!
+const images = {
+  hero: '/images/hero-englishmans-bay.jpg',
+  sunset: '/images/sunset-store-bay.jpg',
+  nylon: '/images/nylon-pool.jpg',
+  food: '/images/tobago-cuisine.jpg',
+  culture: '/images/steel-pan-culture.jpg'
 }
 
 // Define phrases outside component to avoid dependency issues
 const phrases = ["Tobago", "Your Paradise", "Your Adventure", "Your Getaway", "Tobago"]
 
 export default function TobagoSplashPage() {
-  const [showLoading, setShowLoading] = useState(true)
   const [phraseIndex, setPhraseIndex] = useState(0)
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
-  const { images, loading, generateImage } = useImageGeneration()
-
-  useEffect(() => {
-    // Show loading screen for 3 seconds
-    const timer = setTimeout(() => {
-      setShowLoading(false)
-    }, 3000)
-
-    // Generate all needed images with detailed, realistic prompts - only once on mount
-    generateImage('hero', 'aerial drone shot of Englishmans Bay in Tobago, turquoise crystal clear waters, pristine white sand beach, swaying palm trees, lush tropical green hills, golden hour cinematic lighting, paradise beach, dramatic sky, ultra-detailed, professional photography')
-    generateImage('sunset', 'breathtaking sunset over Store Bay beach in Tobago, distant fishing boats silhouetted against golden sky, fishermen as small distant figures on shoreline, dramatic orange and pink clouds, warm golden light reflecting on calm waters, peaceful Caribbean evening, cinematic composition, ultra-detailed')
-    generateImage('nylon', 'Nylon Pool Tobago with colorful fishing boats anchored in crystal-clear shallow turquoise water, aerial drone view, pristine white sand bottom clearly visible through transparent water, traditional Caribbean fishing vessels, tropical paradise, bright sunny day, ultra-detailed, professional photography')
-    generateImage('food', 'vibrant display of authentic Tobago cuisine, fresh crab and dumpling dishes beautifully plated, colorful Caribbean spices in wooden bowls, tropical fruits, traditional cooking pots, warm restaurant lighting, food photography, no people visible, ultra-detailed, appetizing presentation')
-    generateImage('culture', 'traditional Tobago steel pan drums arrangement at nighttime village setting, glowing fairy lights strung between palm trees, colorful costumes displayed on stands, musical instruments in focus, warm ambient lighting, cultural celebration setup, no people visible, ultra-detailed, atmospheric photography')
-
-    return () => clearTimeout(timer)
-  }, []) // Empty dependency array - only run once on mount
 
   // Cycling text effect
   useEffect(() => {
@@ -125,25 +29,19 @@ export default function TobagoSplashPage() {
   }, [])
 
   return (
-    <>
-      <AnimatePresence>
-        {showLoading && <LoadingScreen />}
-      </AnimatePresence>
-      
-      {!showLoading && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="min-h-screen"
-        >
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen"
+    >
           {/* Hero Section */}
           <section className="relative h-screen flex items-center justify-center overflow-hidden">
             {/* Background Image with Parallax */}
             <motion.div 
               style={{ 
                 y,
-                backgroundImage: images.hero ? `url(${images.hero})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                backgroundImage: `url(${images.hero})`,
                 backgroundAttachment: 'fixed'
               }}
               className="absolute inset-0 w-full h-[120%] bg-cover bg-center"
@@ -158,9 +56,9 @@ export default function TobagoSplashPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.2 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 leading-relaxed"
+                className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6"
               >
-                <div className="mb-4 min-h-[1.2em] flex items-center justify-center">
+                <div className="mb-2 text-center overflow-visible" style={{ minHeight: '2em' }}>
                   <span 
                     key={phraseIndex}
                     className={`inline-block transition-all duration-500 ease-in-out bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent
@@ -168,11 +66,12 @@ export default function TobagoSplashPage() {
                         ? "drop-shadow-2xl scale-110 filter brightness-125" 
                         : "drop-shadow-md scale-100"
                       }`}
+                    style={{ transformOrigin: 'center center', lineHeight: '1.2' }}
                   >
                     {phrases[phraseIndex]}
                   </span>
                 </div>
-                <div className="text-white drop-shadow-lg">in Your Hands</div>
+                <div className="text-white drop-shadow-lg text-center">in Your Hands</div>
               </motion.h1>
               
               <motion.p
@@ -312,7 +211,7 @@ export default function TobagoSplashPage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
-                  backgroundImage: images.sunset ? `url(${images.sunset})` : 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+                  backgroundImage: `url(${images.sunset})`
                 }}
               />
               <div className="absolute inset-0 bg-black/30" />
@@ -343,7 +242,7 @@ export default function TobagoSplashPage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
-                  backgroundImage: images.nylon ? `url(${images.nylon})` : 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+                  backgroundImage: `url(${images.nylon})`
                 }}
               />
               <div className="absolute inset-0 bg-black/20" />
@@ -374,7 +273,7 @@ export default function TobagoSplashPage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
-                  backgroundImage: images.food ? `url(${images.food})` : 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+                  backgroundImage: `url(${images.food})`
                 }}
               />
               <div className="absolute inset-0 bg-black/40" />
@@ -515,8 +414,6 @@ export default function TobagoSplashPage() {
               </p>
             </div>
           </footer>
-        </motion.div>
-      )}
-    </>
+    </motion.div>
   )
 } 

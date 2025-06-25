@@ -90,14 +90,15 @@ const useImageGeneration = () => {
   return { images, loading, generateImage }
 }
 
+// Define phrases outside component to avoid dependency issues
+const phrases = ["Tobago", "Your Paradise", "Your Adventure", "Your Getaway", "Tobago"]
+
 export default function TobagoSplashPage() {
   const [showLoading, setShowLoading] = useState(true)
   const [phraseIndex, setPhraseIndex] = useState(0)
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
   const { images, loading, generateImage } = useImageGeneration()
-  
-  const phrases = ["Tobago", "Your Paradise", "Your Adventure", "Your Getaway", "Tobago"]
 
   useEffect(() => {
     // Show loading screen for 3 seconds
@@ -113,7 +114,7 @@ export default function TobagoSplashPage() {
     generateImage('culture', 'traditional Tobago steel pan drums arrangement at nighttime village setting, glowing fairy lights strung between palm trees, colorful costumes displayed on stands, musical instruments in focus, warm ambient lighting, cultural celebration setup, no people visible, ultra-detailed, atmospheric photography')
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [generateImage])
 
   // Cycling text effect
   useEffect(() => {
@@ -269,7 +270,7 @@ export default function TobagoSplashPage() {
                   {
                     icon: "🏝️",
                     title: "Discover Hidden Gems",
-                    description: "Uncover secret beaches, hidden waterfalls, and local spots that guidebooks never mention. Experience Tobago's best-kept secrets."
+                    description: "Uncover secret beaches, hidden waterfalls, and local spots that guidebooks never mention. Experience Tobago&apos;s best-kept secrets."
                   },
                   {
                     icon: "🗺️",
@@ -327,7 +328,7 @@ export default function TobagoSplashPage() {
                     Where Every Sunset Tells a Story
                   </h3>
                   <p className="text-xl leading-relaxed mb-8">
-                    Watch fishermen return with the day's catch as golden light dances on gentle waves. 
+                    Watch fishermen return with the day&apos;s catch as golden light dances on gentle waves. 
                     This is Store Bay—where time slows down and magic happens every evening.
                   </p>
                   <button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-full hover:bg-white/30 transition-all">
@@ -355,7 +356,7 @@ export default function TobagoSplashPage() {
                   className="max-w-2xl ml-auto text-white text-right"
                 >
                   <h3 className="text-4xl md:text-5xl font-bold mb-6">
-                    Nature's Swimming Pool
+                    Nature&apos;s Swimming Pool
                   </h3>
                   <p className="text-xl leading-relaxed mb-8">
                     Float in crystal-clear waters over white sand in the middle of the ocean. 
@@ -390,7 +391,7 @@ export default function TobagoSplashPage() {
                   </h3>
                   <p className="text-xl leading-relaxed mb-8">
                     Taste traditions in every bite. From roadside stalls to family kitchens, 
-                    discover the recipes and stories that make our island's soul.
+                    discover the recipes and stories that make our island&apos;s soul.
                   </p>
                   <button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-full hover:bg-white/30 transition-all">
                     Taste Tobago
@@ -415,7 +416,7 @@ export default function TobagoSplashPage() {
                 </h2>
                 <p className="text-xl text-gray-700 leading-relaxed mb-12">
                   Every download creates connections. Every visit supports families. Every story shared builds bridges 
-                  between cultures. This isn't just tourism—it's about creating lasting bonds that uplift our island community 
+                  between cultures. This isn&apos;t just tourism—it&apos;s about creating lasting bonds that uplift our island community 
                   and enrich every soul who experiences our paradise.
                 </p>
                 
@@ -462,7 +463,7 @@ export default function TobagoSplashPage() {
                   Ready to Explore?
                 </h2>
                 <p className="text-xl text-white/90 mb-12 max-w-3xl mx-auto">
-                  Join thousands who've discovered the real Tobago. Download now and start your adventure 
+                  Join thousands who&apos;ve discovered the real Tobago. Download now and start your adventure 
                   with authentic experiences, local connections, and endless wonder.
                 </p>
                 
